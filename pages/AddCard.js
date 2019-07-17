@@ -4,6 +4,8 @@ import { View, TextInput, ScrollView, KeyboardAvoidingView, StyleSheet, Picker }
 import * as Permissions from 'expo-permissions';
 import SafeArea from 'react-native-safe-area-view';
 import styled from 'styled-components';
+import {Actions} from 'react-native-router-flux';
+import retailCard from '../retailCard'
 
 const Section = styled.View`
 flex-direction: row;

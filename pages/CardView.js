@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
-import { AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity } from 'react-native';
+import { Alert,AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity,AsyncStorage } from 'react-native';
 import { Card, ListItem, Button, Icon, Image } from 'react-native-elements';
 import retailCard from '../retailCard';
 import {Actions} from 'react-native-router-flux';
@@ -24,6 +24,33 @@ export default class CardView extends Component{
     componentDidMount(){
         console.log(this.state.card);
         console.log(this.state.card.cardNumber);
+      }
+
+    async deleteCard(){
+        try{
+            await AsyncStorage.removeItem('activeCard');
+            console.log("removed card successfully")
+            Actions.yourwallet();
+        }catch(error){
+            console.log("Error deleting Card")
+        }
+    }
+
+    
+    confirmDelete(){
+        Alert.alert(
+          'Delete Card',
+          'Are you sure you want to delete this card?',
+          [
+            {text: 'Cancel', onPress: () => console.log('Cancel Press')},
+            {
+              text: 'Yes, delete this card',
+              onPress: () => this.deleteCard(),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
       }
 
     render(){
@@ -54,6 +81,7 @@ export default class CardView extends Component{
 
                 <TouchableOpacity
                     style={styles.removeButton}
+                    onPress = {() => this.confirmDelete()}
                 >
                 <Text style = {styles.removeStyle}> Remove Card </Text>
                 </TouchableOpacity>
