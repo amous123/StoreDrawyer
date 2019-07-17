@@ -5,6 +5,8 @@ import Login from './pages/LogInPage';
 import Signup from './pages/SignUpPage';
 import Yourwallet from './pages/YourWallet';
 import Cardview from './pages/CardView';
+import AddCard from './pages/AddCard';
+import ScanCard from './pages/ScanCard';
 
 export default class Routes extends Component {
     render() {
@@ -15,10 +17,12 @@ export default class Routes extends Component {
                 titleStyle={{color: 'black',}}
             >
                 <Stack key="root">
+                <Scene key="yourwallet" component={Yourwallet} title="Wallet"/>
+                <Scene key="addcard" component={AddCard} title="New Loyalty Card"/>
                 <Scene key="login" component={Login} title="Login"/>
                 <Scene key="signup" component={Signup} title="Sign up"/>
-                <Scene key="yourwallet" component={Yourwallet} title="Wallet"/>
                 <Scene key="cardview" component={Cardview} title="Cards"/>
+                <Scene key="scancard" component={ScanCard} title="Scan Barcode"/>
                 </Stack>
             </Router>
         )

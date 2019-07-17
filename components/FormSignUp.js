@@ -35,18 +35,22 @@ export default class FormSignUp extends Component {
             try{
                 let loginDetails = await AsyncStorage.getItem('loginDetails');
                 let ld = JSON.parse(loginDetails);
+                console.log(this.ld);
                 if(ld.username !== username){
                     AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
  
                     Keyboard.dismiss();
                     alert("You successfully registered. Username: " + username + " Email: " + email + ' password: ' + password);
+                    console.log(this.state);
                     this.login();
                 }else{
                     alert('Username already taken!');
+                    console.log(this.state);
                 }
 
             }catch(error){
                 alert('error');
+                console.log(this.state);
             }
 
         }
@@ -61,17 +65,20 @@ export default class FormSignUp extends Component {
                     if (ld.username == username && ld.password == password)
                     {
                         alert('Log in successful!');
+                        console.log(this.state);
                         this.login();
                     }
                     else
                     {
                         alert('Username or password is not valid!');
+                        console.log(this.state);
                     }
                 }
  
             }catch(error)
             {
-                alert(error);
+                alert('Could not login');
+                console.log(this.state);
             }
         }
     }
