@@ -4,6 +4,11 @@ import { View, TextInput, ScrollView, KeyboardAvoidingView, StyleSheet, Picker }
 import * as Permissions from 'expo-permissions';
 import SafeArea from 'react-native-safe-area-view';
 import styled from 'styled-components';
+<<<<<<< HEAD
+=======
+import {Actions} from 'react-native-router-flux';
+import retailCard from '../retailCard'
+>>>>>>> c3e1d2fbc0cb07198c69c81b27a911732b4ce796
 
 const Section = styled.View`
 flex-direction: row;
@@ -60,7 +65,11 @@ text-align: left;
 
 export default class AddCard extends React.Component {
     static navigationOptions = {
+<<<<<<< HEAD
       title: 'New Loyalty Card',
+=======
+      title: 'AddCard',
+>>>>>>> c3e1d2fbc0cb07198c69c81b27a911732b4ce796
     };
     constructor(props) { 
         super(props);

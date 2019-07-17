@@ -14,12 +14,6 @@ export default class LogInPage extends Component {
         Actions.signup()
     }
 
-    adam(){
-        Actions.yourwallet();
-    }
-
-
- 
     render() {
         return(
                 <View style={styles.container}>
