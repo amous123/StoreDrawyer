@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "AsyncStorage": "^0.1.5",
     "expo": "^33.0.0",
     "expo-barcode-scanner": "^5.0.1",
     "expo-camera": "^5.0.1",

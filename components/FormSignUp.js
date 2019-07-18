@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
  
 import {Actions} from 'react-native-router-flux';
+//import console = require('console');
  
 export default class FormSignUp extends Component {
  
@@ -33,46 +34,25 @@ export default class FormSignUp extends Component {
         if(this.props.type !== 'Login')
         {
             try{
-                let loginDetails = await AsyncStorage.getItem('loginDetails');
-                let ld = JSON.parse(loginDetails);
-                if(ld.username !== username){
-                    AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
+                //let loginDetails = await AsyncStorage.getItem('loginDetails');
+                //let ld = JSON.parse(loginDetails);
+                //alert(loginDetails);
+                //alert(ld.username +":"+ username);
+                if(email.includes("@")){
+                    
+                    //AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
  
                     Keyboard.dismiss();
                     alert("You successfully registered. Username: " + username + " Email: " + email + ' password: ' + password);
                     this.login();
                 }else{
-                    alert('Username already taken!');
+                    alert('Email has the wrong format!');
                 }
 
             }catch(error){
-                alert('error');
+                alert('error'+error);
             }
 
-        }
-        else if(this.props.type == 'Login')
-        {
-            try{
-                let loginDetails = await AsyncStorage.getItem('loginDetails');
-                let ld = JSON.parse(loginDetails);
- 
-                if (ld.username != null && ld.password != null)
-                {
-                    if (ld.username == username && ld.password == password)
-                    {
-                        alert('Log in successful!');
-                        this.login();
-                    }
-                    else
-                    {
-                        alert('Username or password is not valid!');
-                    }
-                }
- 
-            }catch(error)
-            {
-                alert(error);
-            }
         }
     }
  
@@ -135,8 +115,8 @@ export default class FormSignUp extends Component {
             ref={(input) => this.password = input}
           />
  
-                <TouchableOpacity style={styles.button}> 
-                    <Text style={styles.buttonText} onPress={this.saveData}>{this.props.type}</Text>
+                <TouchableOpacity style={styles.button} onPress={this.saveData}> 
+                    <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>
             </View>
             
