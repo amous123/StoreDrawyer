@@ -150,6 +150,9 @@ export default class YourWallet extends Component{
     render(){
         return(
             <View style= {styles.mainView}>
+              <Image 
+            style={styles.help}
+            source = {require('../assets/help.png')}></Image>
                 <View style = {styles.headers}><Text style = {styles.titles}>Food</Text></View>
                 <FlatList 
                 contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
@@ -294,5 +297,12 @@ const styles = StyleSheet.create({
   },
   newCard:{
     color:'white',
-  }
+  },
+  help:{
+    marginTop:0,
+    height:20,
+    width:20,
+    position:'absolute',
+    marginLeft:375,
+  },
   });

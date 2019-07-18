@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import RadioForm from 'react-native-simple-radio-button';
 import { Actions } from 'react-native-router-flux';
 import retailCard from '../retailCard';
+import {Image} from 'react-native-elements'
 
 const Section = styled.View`
 flex-direction: column;
@@ -88,7 +89,13 @@ const styles = StyleSheet.create({
       },
       newCard:{
         color:'white',
-      }
+      },
+      help:{
+        marginTop:0,
+        height:20,
+        width:20,
+        position:'absolute',
+      },
 })
 
 

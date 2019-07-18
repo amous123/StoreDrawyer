@@ -87,6 +87,9 @@ export default class CardView extends Component{
         return(
             <View style = {styles.cont}>
             <View style = {styles.container}>
+            <Image 
+            style={styles.help}
+            source = {require('../assets/help.png')}></Image>
             <View style ={styles.greeting}
             ><Text style ={styles.greetingText}>Good Afternoon, Adam</Text>
             <Image 
@@ -179,6 +182,13 @@ const styles = StyleSheet.create({
         padding: 10,
 
     
+    },
+    help:{
+        marginTop:0,
+        height:20,
+        width:20,
+        position:'absolute',
+        marginLeft:375,
     },
     mainContainer:{
         flexDirection: 'row',
