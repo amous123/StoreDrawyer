@@ -36,6 +36,10 @@ export default class CardView extends Component{
         }
     }
 
+    addTransaction(){
+        Actions.transac();
+    }
+
     
     confirmDelete(){
         Alert.alert(
@@ -75,6 +79,7 @@ export default class CardView extends Component{
             <View style = {styles.offerButton}>
                 <TouchableOpacity
                     style={styles.button}
+                    onPress = {() => this.addTransaction()}
                 >
                 <Text style = {styles.offerStyle}> View Offers and More </Text>
                 </TouchableOpacity>

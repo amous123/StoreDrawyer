@@ -7,6 +7,7 @@ import Yourwallet from './pages/YourWallet';
 import Cardview from './pages/CardView';
 import AddCard from './pages/AddCard';
 import ScanCard from './pages/ScanCard';
+import Transaction from './pages/Transation';
 
 export default class Routes extends Component {
     render() {
@@ -18,6 +19,7 @@ export default class Routes extends Component {
             >
                 <Stack key="root">
                 <Scene key="yourwallet" component={Yourwallet} title="Wallet"/>
+                <Scene key="transac" component={Transaction} title="New Transaction"/>
                 <Scene key="addcard" component={AddCard} title="New Loyalty Card"/>
                 <Scene key="login" component={Login} title="Login"/>
                 <Scene key="signup" component={Signup} title="Sign up"/>

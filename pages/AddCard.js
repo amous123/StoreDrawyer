@@ -1,14 +1,18 @@
 //Page for adding a new card to user's wallet
 import * as React from 'react';
-import { View, TextInput, ScrollView, KeyboardAvoidingView, StyleSheet, Picker } from 'react-native';
+import { Alert, View, ScrollView, KeyboardAvoidingView, StyleSheet, TouchableOpacity, Dimensions, Keyboard, UIManager } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import SafeArea from 'react-native-safe-area-view';
 import styled from 'styled-components';
+import { TextInput, Headline, List, Text } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import RadioForm from 'react-native-simple-radio-button';
+import { Actions } from 'react-native-router-flux';
 
 const Section = styled.View`
-flex-direction: row;
+flex-direction: column;
 justify-content: flex-start;
-padding: 15px 20px;
+padding: 10px 20px 10px 20px;
 background: #FFF;
 `;
 
@@ -37,8 +41,6 @@ const styles = StyleSheet.create({
     cardInputItem: {
         justifyContent: "center",
         alignItems: "flex-start",
-        //borderWidth : 3,
-        //borderColor : "#FE4A49",
         height: 25,
         fontSize:18,
     },
@@ -49,8 +51,45 @@ const styles = StyleSheet.create({
         borderColor : "#157A6E",
         height: 25,
         fontSize:18,
-    }
+    },
+    heading:{
+        fontSize: 14,
+        color: '#9DA8BA',
+        textAlign: 'left',
+        marginBottom: 0,
+        paddingLeft:"2%",
+    },
+    sectionItem:{
+        flex:1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+    },
+    textIn:{
+        marginLeft: 15,
+        marginRight: 15,
+        width: 50,
+    },
+    input: {
+        paddingBottom: "3%",
+        fontSize:14,
+        borderRadius: 5,
+        marginBottom: "7%",
+        width: 300,
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+      },
+      button:{
+        alignItems: 'center',
+        backgroundColor: '#0099ff',
+        padding: 10,
+        borderRadius:50,
+      },
+      newCard:{
+        color:'white',
+      }
 })
+
 
 const Subheading = styled.Text`
 font-size: 16px;
@@ -58,19 +97,58 @@ color: #213052;
 text-align: left;
 `;
 
+const { State: TextInputState } = TextInput;
+
+var radio_props = [
+    {label: 'Food', value: 0, fontSize:30 },
+    {label: 'Clothing', value: 1 },
+    {label: 'Gas', value:2}
+  ];
+
 export default class AddCard extends React.Component {
     static navigationOptions = {
-      title: 'New Loyalty Card',
+      title: 'INSERT CARD INFORMATION',
     };
     constructor(props) { 
         super(props);
         this.state = { 
             firstName: '',
             lastName: '', 
+            name:'',
             cardNumber: '',
             cardCategory: 0,
+            currentPoints:0,
+            checked: 'first',
+            radioState:0,
+
+            validFN: false,
+            validLN: false,
+            validCa: false,
+            expanded: true
         }
     }
+
+    yourWallet(){
+        Actions.yourwallet();
+    }
+
+
+    newCard(){
+        Alert.alert(
+            'New Card Added',
+            'Congradulations ' + this.state.name +  " your David's tea card with point balance of " + this.state.currentPoints + " has been properly saved",
+            [
+              {text: 'Proceed to wallet',
+               onPress: () =>this.yourWallet()},
+            ],
+            {cancelable: false},
+          );
+      }
+
+    _handlePress = () =>
+    this.setState({
+      expanded: !this.state.expanded
+    });
 
     updateCategory = (cardCategory) => {
         this.setState({cardCategory:cardCategory});
@@ -80,124 +158,103 @@ export default class AddCard extends React.Component {
         this.getPermissionsAsync();
     }
     
-    formatCardNumber = (cardNumber) => {
-        if (cardNumber.length >= 18) {
-            this.setState({cardNumLimit: true});
-            this.setState({cardNumber: cardNumber.slice(0, 19)}); 
-            return;
-        }else{
-            this.setState({cardNumLimit:false});
-            var regexExpression = /(\d{4})/g;
-            var match = regexExpression.exec(cardNumber);
-            var formattedCardNumber = "";
-            
-            while (match && this.state.cardNumLimit == false) {
-                formattedCardNumber += match[0] + ( formattedCardNumber.length == 15 ? "" : "-");
-                match = regexExpression.exec(cardNumber);
-            }
-            
-            if (formattedCardNumber.length != 0) {
-                formattedCardNumber += cardNumber.slice(formattedCardNumber.length, cardNumber.length);
-                this.setState({cardNumber: formattedCardNumber}) ;
-            }
-            else {
-                this.setState({cardNumber: cardNumber});
-            }
-        }
-    }
-    
     getPermissionsAsync = async () => {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
         this.setState({ hasCameraPermission: status === 'granted' });
     };
+
+    validateFN = (input) => {
+        this.setState({validFN: input.length >= 2, firstName: input});
+    }
     
-    onTextChanged(t, cardNum) { //callback for immediate state change
-        console.log(cardNum.length)
-        if (cardNum.length == 3){
-            if (t == 16) { }
-            if (t == 2) { this.setState({ autoFocus1: false, autoFocus2: true }, () => { console.log(this.state) }) }
-            if (t == 3) { this.setState({ autoFocus2: false, autoFocus3: true }, () => { console.log(this.state) }) }
-            if (t == 4) { this.setState({ autoFocus3: false, autoFocus4: true }, () => { console.log(this.state) }) }
-        }
-      }
+    validateLN = (input) => {
+        this.setState({validLN: input.length >= 2, lastName: input});
+    }
+
+    validateCA = (input) => {
+        this.setState({validCa: input.length >= 2, cardNumber: input});
+    }
+
+    
 
   render() { 
+    const { checked } = this.state;
+
+    const {shift} = this.state;
+
+    const radioToggleOff = <View style={{justifyContent: 'center'}}>
+                            <Icon name="radio-button-unchecked" size={30} color="#1C88E5" />
+                        </View>;
+    const radioToggleOn = <View style={{justifyContent: 'center'}}>
+                                <Icon name="radio-button-checked" size={30} color="#1C88E5" />
+                        </View>;
       return (
-          <View>
-            <SafeArea>
-                <KeyboardAvoidingView behavior="padding" enabled> 
-                    <ScrollView>
-                        <View>
+          <View style={{backgroundColor: 'white'}}> 
+              <SafeArea style={{backgroundColor: 'white'}}>
+                <KeyboardAvoidingView style={{backgroundColor: 'white'}} behavior="padding" enabled>
+                    <ScrollView style={{backgroundColor: 'white', paddingBottom:100}}>
                         <Section>
                             <SectionItem>
-                                <Heading>
-                                    {'Insert card information'.toUpperCase()} 
-                                </Heading>
+                                <Heading style={styles.heading}>Card owner information</Heading>
                             </SectionItem>
-                        </Section> 
-                        <Section>
-                            <SectionItem>
-                                <View>
-                                    <Subheading>First Name</Subheading>
-                                    <TextInput 
-                                    placeholder="First Name"
-                                    style={{height: 100}}
-                                    onChangeText={(firstName) => {this.setState({firstName: firstName}) ; console.log(this.state)}}
-                                    value={this.state.firstName}/>
-                                </View>
-                            </SectionItem>
-                            <SectionItem>
-                                <View> 
-                                    <Subheading>Last Name</Subheading>
-                                    <TextInput 
-                                    placeholder="Last Name"
-                                    style={{height: 100}}
-                                    onChangeText={(lastName) => this.setState({lastName: lastName})}
-                                    value={this.state.lastName}/>
-                                </View>
-                            </SectionItem>
+                            <TextInput 
+                                        label= "First Name"
+                                        outlined="true"
+                                        style={styles.input}
+                                        theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
+                                        onChangeText={(firstName) => {this.setState({firstName: firstName}) ; console.log(this.state) ; this.validateFN(firstName) ; this.setState({name: name+firstName})}}
+                                        onSubmitEditing={() => { this.lastNameInput.focus()}}
+                                        error={this.state.firstName && !this.state.validFN}
+                                        value={this.state.firstName}/>
+                            
+                            <TextInput 
+                                        label = "Last Name"
+                                        style={styles.input}
+                                        theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
+                                        // onChangeText={(lastName) => this.setState({lastName: lastName})}
+                                        onChangeText={(lastName) => {this.setState({lastName: lastName}) ; console.log(this.state) ; this.validateLN(lastName) ; this.setState({name: this.state.firstName+lastName})}}
+                                        value={this.state.lastName}
+                                        ref = {(input) => this.lastNameInput = input}/>
                         </Section>
                         <Section>
-                            <Subheading>Card Number</Subheading>
-                        </Section>
-                        <Section >
                             <SectionItem>
-                                <View style={CardInputItem}>
-                                    <TextInput 
-                                    ref={(TextInput) => { this.cardNumber = TextInput; }}
-                                    keyboardType='numeric'
-                                    returnKeyType='next'
-                                    placeholder="0000000000000000"
-                                    style={styles.cardInputItem}
-                                    onChangeText={(cardNumber) => {this.setState({cardNumber:cardNumber})} }
-                                    value={this.state.cardNumber}
-                                    blurOnSubmit={false}
-                                    maxLength={16}  
-                                    />
-                                </View>
+                                <Heading style={styles.heading}>Card information</Heading>
                             </SectionItem>
+                                <TextInput 
+                                        label = "Card Number"
+                                        style={styles.input}
+                                        keyboardType="decimal-pad"
+                                        returnKeyType="done"
+                                        theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
+                                        onChangeText={(cardNumber) => this.setState({cardNumber: cardNumber})}
+                                        value={this.state.cardNumber}/>
+                                <TextInput
+                                    label = "Current points"
+                                    style={styles.input}
+                                    keyboardType="decimal-pad"
+                                    returnKeyType="done"
+                                    theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
+                                    onChangeText={(currentPoints) => this.setState({currentPoints: currentPoints})}
+                                    value={this.state.currentPoints}/>
+                                <Text style={styles.input}>Choose a card category</Text>
+                                <RadioForm
+                                placeholder = "Choose a card category"
+                                radio_props={radio_props}
+                                initial={0}
+                                onPress={(value) => {this.setState({value:value})}}
+                                />
                         </Section>
-                        <Section>
-                                <View>
-                                    <Subheading>Category</Subheading>
-                                    <Picker 
-                                    selectedValue = {this.state.cardCategory} 
-                                    onValueChange = {this.updateCategory}
-                                    style={{ height: 100, width:100}}
-                                    
-                                    >
-                                        <Picker.Item label = "Food" value = "0" />
-                                        <Picker.Item label = "Clothing" value = "1" />
-                                        <Picker.Item label = "Gas" value = "2" />
-                                    </Picker>
-                                </View>
-                            <SectionItem>
-                            </SectionItem>
-                        </Section>
-                        </View> 
+                        <View style = {styles.offerButton}>
+                            <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => this.newCard()}
+                            >
+                                <Text style = {styles.newCard}> Add a new loyalty card </Text>
+                            </TouchableOpacity>
+                        </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
-            </SafeArea>
+              </SafeArea>
           </View>
       );
   }
