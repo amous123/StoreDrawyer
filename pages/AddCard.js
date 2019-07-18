@@ -1,6 +1,6 @@
 //Page for adding a new card to user's wallet
 import * as React from 'react';
-import { Alert, View, ScrollView, KeyboardAvoidingView, StyleSheet, TouchableOpacity, Dimensions, Keyboard, UIManager } from 'react-native';
+import { AsyncStorage, Alert, View, ScrollView, KeyboardAvoidingView, StyleSheet, TouchableOpacity, Dimensions, Keyboard, UIManager } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import SafeArea from 'react-native-safe-area-view';
 import styled from 'styled-components';
@@ -8,6 +8,7 @@ import { TextInput, Headline, List, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RadioForm from 'react-native-simple-radio-button';
 import { Actions } from 'react-native-router-flux';
+import retailCard from '../retailCard';
 
 const Section = styled.View`
 flex-direction: column;
@@ -115,11 +116,13 @@ export default class AddCard extends React.Component {
             firstName: '',
             lastName: '', 
             name:'',
+            cardName:'',
             cardNumber: '',
             cardCategory: 0,
             currentPoints:0,
             checked: 'first',
             radioState:0,
+            userCards:[],
 
             validFN: false,
             validLN: false,
@@ -132,11 +135,28 @@ export default class AddCard extends React.Component {
         Actions.yourwallet();
     }
 
-
+    async addCard(){
+        var cardToAdd  = new retailCard(
+            this.state.cardName,
+            this.state.currentPoints,
+            69,
+            this.state.cardNumber,
+            this.state.cardCategory,
+            );
+        var cards = this.state.userCards;
+        cards.push(cardToAdd);
+        const item = JSON.stringify(cards);
+        try{
+            await AsyncStorage.setItem('userCards',item);
+        }catch(error){
+            console.log("newCard thre an error!")
+        }
+        this.newCard();
+    }
     newCard(){
         Alert.alert(
             'New Card Added',
-            'Congradulations ' + this.state.name +  " your David's tea card with point balance of " + this.state.currentPoints + " has been properly saved",
+            'Congradulations ' + this.state.name +  " your " + this.state.cardName + " card with point balance of " + this.state.currentPoints + " has been properly saved",
             [
               {text: 'Proceed to wallet',
                onPress: () =>this.yourWallet()},
@@ -156,6 +176,7 @@ export default class AddCard extends React.Component {
     
     async componentDidMount() {
         this.getPermissionsAsync();
+        this.getUserCards();
     }
     
     getPermissionsAsync = async () => {
@@ -173,6 +194,20 @@ export default class AddCard extends React.Component {
 
     validateCA = (input) => {
         this.setState({validCa: input.length >= 2, cardNumber: input});
+    }
+
+    async getUserCards(){
+        try{
+        const card = await AsyncStorage.getItem('userCards');
+        const parsedCardsarr = JSON.parse(card);
+        if(card !== null){
+            this.setState({
+                userCards:parsedCardsarr,
+            })
+        }
+    }catch(error){
+        console.log("Get user cards threw an error")
+    }
     }
 
     
@@ -202,7 +237,7 @@ export default class AddCard extends React.Component {
                                         outlined="true"
                                         style={styles.input}
                                         theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
-                                        onChangeText={(firstName) => {this.setState({firstName: firstName}) ; console.log(this.state) ; this.validateFN(firstName) ; this.setState({name: name+firstName})}}
+                                        onChangeText={(firstName) => {this.setState({firstName: firstName}) ; console.log(this.state) ; this.validateFN(firstName) ; this.setState({name: firstName})}}
                                         onSubmitEditing={() => { this.lastNameInput.focus()}}
                                         error={this.state.firstName && !this.state.validFN}
                                         value={this.state.firstName}/>
@@ -212,7 +247,7 @@ export default class AddCard extends React.Component {
                                         style={styles.input}
                                         theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
                                         // onChangeText={(lastName) => this.setState({lastName: lastName})}
-                                        onChangeText={(lastName) => {this.setState({lastName: lastName}) ; console.log(this.state) ; this.validateLN(lastName) ; this.setState({name: this.state.firstName+lastName})}}
+                                        onChangeText={(lastName) => {this.setState({lastName: lastName}) ; console.log(this.state) ; this.validateLN(lastName) ; this.setState({name: this.state.firstName+ " " + lastName})}}
                                         value={this.state.lastName}
                                         ref = {(input) => this.lastNameInput = input}/>
                         </Section>
@@ -220,6 +255,12 @@ export default class AddCard extends React.Component {
                             <SectionItem>
                                 <Heading style={styles.heading}>Card information</Heading>
                             </SectionItem>
+                            <TextInput 
+                                        label = "Card Name"
+                                        style={styles.input}
+                                        theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
+                                        onChangeText={(cardName) => this.setState({cardName: cardName})}
+                                        value={this.state.cardName}/>
                                 <TextInput 
                                         label = "Card Number"
                                         style={styles.input}
@@ -241,13 +282,13 @@ export default class AddCard extends React.Component {
                                 placeholder = "Choose a card category"
                                 radio_props={radio_props}
                                 initial={0}
-                                onPress={(value) => {this.setState({value:value})}}
+                                onPress={(value) => {this.setState({cardCategory:value})}}
                                 />
                         </Section>
                         <View style = {styles.offerButton}>
                             <TouchableOpacity
                             style={styles.button}
-                            onPress={() => this.newCard()}
+                            onPress={() => this.addCard()}
                             >
                                 <Text style = {styles.newCard}> Add a new loyalty card </Text>
                             </TouchableOpacity>

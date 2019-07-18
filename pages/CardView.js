@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
-import { Alert,AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity,AsyncStorage } from 'react-native';
+import {Alert,AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity,AsyncStorage } from 'react-native';
 import { Card, ListItem, Button, Icon, Image } from 'react-native-elements';
 import retailCard from '../retailCard';
 import {Actions} from 'react-native-router-flux';
@@ -18,21 +18,47 @@ export default class CardView extends Component{
         activecard = this.props.card;
         this.state = {
             card:activecard,
+            userCards:[],
         }
 
     }
     componentDidMount(){
-        console.log(this.state.card);
-        console.log(this.state.card.cardNumber);
+        this.getUserCards();
+      }
+
+      async getUserCards(){
+        try{
+          const cardsarr = await AsyncStorage.getItem('userCards')
+          const parsedCardsarr = JSON.parse(cardsarr);
+          if(cardsarr !== null){
+            console.log("usercards exists")
+            //usercards array exists, update the state
+            this.setState({
+              userCards:parsedCardsarr,
+            });
+          }else{
+              console.log("An unexpected error occured")
+          }
+        }catch(error){
+          console.log(error);
+          console.log("getUsercards threw an unexpected error")
+        }
       }
 
     async deleteCard(){
+        var cardArr = this.state.userCards;
+        var active = this.state.card;
+        for(var i = 0; i <cardArr.length;i++){
+            if(cardArr[i].name === active.name ){
+                cardArr.splice(i,1);
+            }
+        }
+        const item = JSON.stringify(cardArr);
         try{
-            await AsyncStorage.removeItem('activeCard');
-            console.log("removed card successfully")
+            await AsyncStorage.setItem('userCards',item)
             Actions.yourwallet();
         }catch(error){
-            console.log("Error deleting Card")
+            console.log("delete card threw an error");
         }
     }
 
@@ -126,7 +152,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         marginBottom: 10,
-        marginTop: 140,
+        marginTop: 120,
         marginLeft:20,
         marginRight:20,
         alignContent: 'center',

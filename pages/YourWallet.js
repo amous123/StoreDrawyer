@@ -26,20 +26,19 @@ export default class YourWallet extends Component{
 
     constructor(props){
         super(props)
-        //initialize a default list for testing purposes
-        var cards = [];
-        var ae  = new retailCard("American Eagle",0,1,0,1);
-        var gap = new retailCard("Gap",0,2,0,1);
-        var starbucks = new retailCard("Starbucks",0,3,"1234 5678 9876 5432",0);
-        var secondCup = new retailCard("Second Cup",0,4,0,0);
-        var shell = new retailCard("Shell",0,5,0,2);
-        var esso = new retailCard("Esso",0,6,0,2);
-        var tims = new retailCard("Tims",0,7,0,0);
-        var mcdonalds = new retailCard("McDonald's",0,8,0,0);
-        var newCard = new retailCard
-        cards.push(ae,gap,starbucks,secondCup,shell,esso,tims,mcdonalds);
+        // //initialize a default list for testing purposes
+        // var cards = [];
+        // var gap = new retailCard("Gap",0,2,0,1);
+        // var starbucks = new retailCard("Starbucks",0,3,"1234 5678 9876 5432",0);
+        // var secondCup = new retailCard("Second Cup",0,4,0,0);
+        // var shell = new retailCard("Shell",0,5,0,2);
+        // var esso = new retailCard("Esso",0,6,0,2);
+        // var tims = new retailCard("Tims",0,7,0,0);
+        // var mcdonalds = new retailCard("McDonald's",0,8,0,0);
+        // var newCard = new retailCard
+        // cards.push(ae,gap,starbucks,secondCup,shell,esso,tims,mcdonalds);
         this.state = {
-            myCards : cards,
+            myCards : [],
             foodCards:[],
             clothingCards:[],
             gasCard:[],
@@ -48,34 +47,71 @@ export default class YourWallet extends Component{
     }
 
     categorizeArr(){
+        var foodCardsArr =[];
+        var clothingCardsArr =[];
+        var gasCardArr =[];
         var items = this.state.myCards;
         for(var i = 0; i < items.length; i++){
             switch(items[i].category){
                 case 0:
-                    this.state.foodCards.push(items[i]);
+                    foodCardsArr.push(items[i]);
+                    this.setState({
+                      foodCards :foodCardsArr, 
+                    })
                     break;
                 case 1:
-                        this.state.clothingCards.push(items[i]);
+                    clothingCardsArr.push(items[i]);
+                    this.setState({
+                      clothingCards :clothingCardsArr, 
+                    })
                         break;
                 case 2:
-                        this.state.gasCard.push(items[i]);
+                    gasCardArr.push(items[i]);
+                    this.setState({
+                      gasCard :gasCardArr, 
+                    })
                         break;
             }
         }
     }
 
-    async componentDidMount(){
-        this.categorizeArr();
-        this.setTempCard();
+    componentDidMount(){
+      this.getUserCards();    
     }
 
-    async setTempCard(){
+    async getUserCards(){
       try{
-        await AsyncStorage.setItem('activeCard', this.state.myCards(0))
+        const cardsarr = await AsyncStorage.getItem('userCards')
+        const parsedCardsarr = JSON.parse(cardsarr);
+        if(cardsarr !== null){
+          console.log("usercards exists")
+          //usercards array exists, update the state
+          this.setState({
+            myCards:parsedCardsarr,
+          });
+        }
+        else{
+          //no usercards array exists
+          console.log("no userCards array exists, setting empty array")
+          await AsyncStorage.setItem('userCards', JSON.stringify([]))
+        }
       }catch(error){
-        console.log(error)
-        console.log("Error setting temporary card")
+        console.log(error);
+        console.log("getUsercards threw an unexpected error")
       }
+      // var gap = new retailCard("Gap",0,2,0,1);
+      // var cards = [];
+      // cards.push(gap);
+      // this.setState({
+      //   myCards:cards,
+      // })
+      // var item = this.state.myCards;
+      // try{  
+      //   await AsyncStorage.setItem('userCards', JSON.stringify(item))
+      // }catch(error){
+      //   console.log("error caught")
+      // }
+      this.categorizeArr();
     }
 
     cardview(item){
@@ -146,8 +182,10 @@ export default class YourWallet extends Component{
                 renderItem = {({item,index}) => {
                     return (
                         <View>
+                         <TouchableOpacity onPress={() => this.cardview(item)}>
                             <FlatListItem item = {item} index = {index}>
                             </FlatListItem>
+                            </TouchableOpacity>
                         </View>
                     );
                 }}
@@ -166,8 +204,10 @@ export default class YourWallet extends Component{
                 renderItem = {({item,index}) => {
                     return (
                         <View>
+                          <TouchableOpacity onPress={() => this.cardview(item)}>
                             <FlatListItem item = {item} index = {index}>
                             </FlatListItem>
+                            </TouchableOpacity>
                         </View>
                     );
                 }}
