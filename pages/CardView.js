@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
+<<<<<<< HEAD
 import { Alert,AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity,AsyncStorage } from 'react-native';
+=======
+import {Alert,AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity,AsyncStorage } from 'react-native';
+>>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
 import { Card, ListItem, Button, Icon, Image } from 'react-native-elements';
 import retailCard from '../retailCard';
 import {Actions} from 'react-native-router-flux';
@@ -18,12 +22,69 @@ export default class CardView extends Component{
         activecard = this.props.card;
         this.state = {
             card:activecard,
+            userCards:[],
         }
 
     }
     componentDidMount(){
-        console.log(this.state.card);
-        console.log(this.state.card.cardNumber);
+        this.getUserCards();
+      }
+
+      async getUserCards(){
+        try{
+          const cardsarr = await AsyncStorage.getItem('userCards')
+          const parsedCardsarr = JSON.parse(cardsarr);
+          if(cardsarr !== null){
+            console.log("usercards exists")
+            //usercards array exists, update the state
+            this.setState({
+              userCards:parsedCardsarr,
+            });
+          }else{
+              console.log("An unexpected error occured")
+          }
+        }catch(error){
+          console.log(error);
+          console.log("getUsercards threw an unexpected error")
+        }
+      }
+
+    async deleteCard(){
+        var cardArr = this.state.userCards;
+        var active = this.state.card;
+        for(var i = 0; i <cardArr.length;i++){
+            if(cardArr[i].name === active.name ){
+                cardArr.splice(i,1);
+            }
+        }
+        const item = JSON.stringify(cardArr);
+        try{
+            await AsyncStorage.setItem('userCards',item)
+            Actions.yourwallet();
+        }catch(error){
+            console.log("delete card threw an error");
+        }
+    }
+
+    addTransaction(){
+        Actions.transac();
+    }
+
+    
+    confirmDelete(){
+        Alert.alert(
+          'Delete Card',
+          'Are you sure you want to delete this card?',
+          [
+            {text: 'Cancel', onPress: () => console.log('Cancel Press')},
+            {
+              text: 'Yes, delete this card',
+              onPress: () => this.deleteCard(),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
       }
 
     async deleteCard(){
@@ -57,6 +118,9 @@ export default class CardView extends Component{
         return(
             <View style = {styles.cont}>
             <View style = {styles.container}>
+            <Image 
+            style={styles.help}
+            source = {require('../assets/help.png')}></Image>
             <View style ={styles.greeting}
             ><Text style ={styles.greetingText}>Good Afternoon, Adam</Text>
             <Image 
@@ -75,6 +139,7 @@ export default class CardView extends Component{
             <View style = {styles.offerButton}>
                 <TouchableOpacity
                     style={styles.button}
+                    onPress = {() => this.addTransaction()}
                 >
                 <Text style = {styles.offerStyle}> View Offers and More </Text>
                 </TouchableOpacity>
@@ -121,7 +186,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         marginBottom: 10,
-        marginTop: 140,
+        marginTop: 120,
         marginLeft:20,
         marginRight:20,
         alignContent: 'center',
@@ -148,6 +213,13 @@ const styles = StyleSheet.create({
         padding: 10,
 
     
+    },
+    help:{
+        marginTop:0,
+        height:20,
+        width:20,
+        position:'absolute',
+        marginLeft:375,
     },
     mainContainer:{
         flexDirection: 'row',

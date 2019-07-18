@@ -18,11 +18,15 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
     "react-native-awesome-card-io": "^0.8.2",
     "react-native-elements": "^1.1.0",
+    "react-native-paper": "^2.16.0",
     "react-native-router-flux": "^4.0.6",
     "react-native-safe-area-view": "^0.14.6",
+    "react-native-simple-radio-button": "^2.7.3",
+    "react-native-vector-icons": "^6.6.0",
     "react-native-web": "^0.11.4",
     "react-navigation": "^3.11.1",
-    "styled-components": "^4.3.2"
+    "styled-components": "^4.3.2",
+    "yarn": "^1.17.3"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.1.1"

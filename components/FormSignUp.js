@@ -34,6 +34,7 @@ export default class FormSignUp extends Component {
         if(this.props.type !== 'Login')
         {
             try{
+<<<<<<< HEAD
                 //let loginDetails = await AsyncStorage.getItem('loginDetails');
                 //let ld = JSON.parse(loginDetails);
                 //alert(loginDetails);
@@ -41,11 +42,20 @@ export default class FormSignUp extends Component {
                 if(email.includes("@")){
                     
                     //AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
+=======
+                let loginDetails = await AsyncStorage.getItem('loginDetails');
+                let ld = JSON.parse(loginDetails);
+                console.log(this.ld);
+                if(ld.username !== username){
+                    AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
+>>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
  
                     Keyboard.dismiss();
                     alert("You successfully registered. Username: " + username + " Email: " + email + ' password: ' + password);
+                    console.log(this.state);
                     this.login();
                 }else{
+<<<<<<< HEAD
                     alert('Email has the wrong format!');
                 }
 
@@ -54,6 +64,45 @@ export default class FormSignUp extends Component {
             }
 
         }
+=======
+                    alert('Username already taken!');
+                    console.log(this.state);
+                }
+
+            }catch(error){
+                alert('error');
+                console.log(this.state);
+            }
+
+        }
+        else if(this.props.type == 'Login')
+        {
+            try{
+                let loginDetails = await AsyncStorage.getItem('loginDetails');
+                let ld = JSON.parse(loginDetails);
+ 
+                if (ld.username != null && ld.password != null)
+                {
+                    if (ld.username == username && ld.password == password)
+                    {
+                        alert('Log in successful!');
+                        console.log(this.state);
+                        this.login();
+                    }
+                    else
+                    {
+                        alert('Username or password is not valid!');
+                        console.log(this.state);
+                    }
+                }
+ 
+            }catch(error)
+            {
+                alert('Could not login');
+                console.log(this.state);
+            }
+        }
+>>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
     }
  
     showData = async()=>{

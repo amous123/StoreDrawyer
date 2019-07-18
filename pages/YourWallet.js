@@ -26,20 +26,19 @@ export default class YourWallet extends Component{
 
     constructor(props){
         super(props)
-        //initialize a default list for testing purposes
-        var cards = [];
-        var ae  = new retailCard("American Eagle",0,1,0,1);
-        var gap = new retailCard("Gap",0,2,0,1);
-        var starbucks = new retailCard("Starbucks",0,3,"1234 5678 9876 5432",0);
-        var secondCup = new retailCard("Second Cup",0,4,0,0);
-        var shell = new retailCard("Shell",0,5,0,2);
-        var esso = new retailCard("Esso",0,6,0,2);
-        var tims = new retailCard("Tims",0,7,0,0);
-        var mcdonalds = new retailCard("McDonald's",0,8,0,0);
-        var newCard = new retailCard
-        cards.push(ae,gap,starbucks,secondCup,shell,esso,tims,mcdonalds);
+        // //initialize a default list for testing purposes
+        // var cards = [];
+        // var gap = new retailCard("Gap",0,2,0,1);
+        // var starbucks = new retailCard("Starbucks",0,3,"1234 5678 9876 5432",0);
+        // var secondCup = new retailCard("Second Cup",0,4,0,0);
+        // var shell = new retailCard("Shell",0,5,0,2);
+        // var esso = new retailCard("Esso",0,6,0,2);
+        // var tims = new retailCard("Tims",0,7,0,0);
+        // var mcdonalds = new retailCard("McDonald's",0,8,0,0);
+        // var newCard = new retailCard
+        // cards.push(ae,gap,starbucks,secondCup,shell,esso,tims,mcdonalds);
         this.state = {
-            myCards : cards,
+            myCards : [],
             foodCards:[],
             clothingCards:[],
             gasCard:[],
@@ -48,22 +47,35 @@ export default class YourWallet extends Component{
     }
 
     categorizeArr(){
+        var foodCardsArr =[];
+        var clothingCardsArr =[];
+        var gasCardArr =[];
         var items = this.state.myCards;
         for(var i = 0; i < items.length; i++){
             switch(items[i].category){
                 case 0:
-                    this.state.foodCards.push(items[i]);
+                    foodCardsArr.push(items[i]);
+                    this.setState({
+                      foodCards :foodCardsArr, 
+                    })
                     break;
                 case 1:
-                        this.state.clothingCards.push(items[i]);
+                    clothingCardsArr.push(items[i]);
+                    this.setState({
+                      clothingCards :clothingCardsArr, 
+                    })
                         break;
                 case 2:
-                        this.state.gasCard.push(items[i]);
+                    gasCardArr.push(items[i]);
+                    this.setState({
+                      gasCard :gasCardArr, 
+                    })
                         break;
             }
         }
     }
 
+<<<<<<< HEAD
     async componentDidMount(){
         this.categorizeArr();
         this.setTempCard();
@@ -76,6 +88,45 @@ export default class YourWallet extends Component{
         console.log(error)
         console.log("Error setting temporary card")
       }
+=======
+    componentDidMount(){
+      this.getUserCards();    
+    }
+
+    async getUserCards(){
+      try{
+        const cardsarr = await AsyncStorage.getItem('userCards')
+        const parsedCardsarr = JSON.parse(cardsarr);
+        if(cardsarr !== null){
+          console.log("usercards exists")
+          //usercards array exists, update the state
+          this.setState({
+            myCards:parsedCardsarr,
+          });
+        }
+        else{
+          //no usercards array exists
+          console.log("no userCards array exists, setting empty array")
+          await AsyncStorage.setItem('userCards', JSON.stringify([]))
+        }
+      }catch(error){
+        console.log(error);
+        console.log("getUsercards threw an unexpected error")
+      }
+      // var gap = new retailCard("Gap",0,2,0,1);
+      // var cards = [];
+      // cards.push(gap);
+      // this.setState({
+      //   myCards:cards,
+      // })
+      // var item = this.state.myCards;
+      // try{  
+      //   await AsyncStorage.setItem('userCards', JSON.stringify(item))
+      // }catch(error){
+      //   console.log("error caught")
+      // }
+      this.categorizeArr();
+>>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
     }
 
     cardview(item){
@@ -90,7 +141,7 @@ export default class YourWallet extends Component{
           {text: 'Cancel', onPress: () => console.log('Cancel Press')},
           {
             text: 'Scan Card',
-            onPress: () => console.log('Scan card pressed'),
+            onPress: () => this.scancard(),
             style: 'cancel',
           },
           {text: 'Enter Details',
@@ -105,10 +156,21 @@ export default class YourWallet extends Component{
       Actions.addcard();
     }
 
+<<<<<<< HEAD
+=======
+    scancard(){
+      console.log("scan card pressed");
+      Actions.scancard();
+    }
+
+>>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
 
     render(){
         return(
             <View style= {styles.mainView}>
+              <Image 
+            style={styles.help}
+            source = {require('../assets/help.png')}></Image>
                 <View style = {styles.headers}><Text style = {styles.titles}>Food</Text></View>
                 <FlatList 
                 contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
@@ -141,8 +203,10 @@ export default class YourWallet extends Component{
                 renderItem = {({item,index}) => {
                     return (
                         <View>
+                         <TouchableOpacity onPress={() => this.cardview(item)}>
                             <FlatListItem item = {item} index = {index}>
                             </FlatListItem>
+                            </TouchableOpacity>
                         </View>
                     );
                 }}
@@ -161,8 +225,10 @@ export default class YourWallet extends Component{
                 renderItem = {({item,index}) => {
                     return (
                         <View>
+                          <TouchableOpacity onPress={() => this.cardview(item)}>
                             <FlatListItem item = {item} index = {index}>
                             </FlatListItem>
+                            </TouchableOpacity>
                         </View>
                     );
                 }}
@@ -249,5 +315,12 @@ const styles = StyleSheet.create({
   },
   newCard:{
     color:'white',
-  }
+  },
+  help:{
+    marginTop:0,
+    height:20,
+    width:20,
+    position:'absolute',
+    marginLeft:375,
+  },
   });

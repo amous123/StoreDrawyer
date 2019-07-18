@@ -1,7 +1,15 @@
 {
+<<<<<<< HEAD
   "hostType": "lan",
   "lanType": "ip",
   "dev": true,
   "minify": false,
   "urlRandomness": "66-dzw"
+=======
+  "hostType": "tunnel",
+  "lanType": "ip",
+  "dev": true,
+  "minify": false,
+  "urlRandomness": "rj-mzx"
+>>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
 }
