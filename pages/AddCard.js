@@ -4,7 +4,7 @@ import { AsyncStorage, Alert, View, ScrollView, KeyboardAvoidingView, StyleSheet
 import * as Permissions from 'expo-permissions';
 import SafeArea from 'react-native-safe-area-view';
 import styled from 'styled-components';
-import { TextInput, Headline, List, Text } from 'react-native-paper';
+import { TextInput, Headline, List, Text, HelperText } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RadioForm from 'react-native-simple-radio-button';
 import { Actions } from 'react-native-router-flux';
@@ -127,6 +127,7 @@ export default class AddCard extends React.Component {
             validFN: false,
             validLN: false,
             validCa: false,
+            validCN: false,
             expanded: true
         }
     }
@@ -193,7 +194,11 @@ export default class AddCard extends React.Component {
     }
 
     validateCA = (input) => {
-        this.setState({validCa: input.length >= 2, cardNumber: input});
+        this.setState({validCa: input.length >= 2 && input != 0, cardNumber: input});
+    }
+
+    validateCN = (input) => {
+        this.setState({validCa: input.length >= 8, cardNumber: input});
     }
 
     async getUserCards(){
@@ -241,6 +246,13 @@ export default class AddCard extends React.Component {
                                         onSubmitEditing={() => { this.lastNameInput.focus()}}
                                         error={this.state.firstName && !this.state.validFN}
                                         value={this.state.firstName}/>
+                                        <HelperText
+                                        type="error"
+                                        visible={this.state.firstName && !this.state.validLN}
+                                        >
+                                            Cannot put an empty card owner name
+                                        </HelperText>
+
                             
                             <TextInput 
                                         label = "Last Name"
@@ -249,7 +261,14 @@ export default class AddCard extends React.Component {
                                         // onChangeText={(lastName) => this.setState({lastName: lastName})}
                                         onChangeText={(lastName) => {this.setState({lastName: lastName}) ; console.log(this.state) ; this.validateLN(lastName) ; this.setState({name: this.state.firstName+ " " + lastName})}}
                                         value={this.state.lastName}
+                                        error={this.state.lastName && !this.state.validLN}
                                         ref = {(input) => this.lastNameInput = input}/>
+                                    <HelperText
+                                        type="error"
+                                        visible={!this.state.validLN && this.state.lastName}
+                                        >
+                                            Cannot put an empty card owner name
+                                        </HelperText>
                         </Section>
                         <Section>
                             <SectionItem>
@@ -259,16 +278,32 @@ export default class AddCard extends React.Component {
                                         label = "Card Name"
                                         style={styles.input}
                                         theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
-                                        onChangeText={(cardName) => this.setState({cardName: cardName})}
+                                        onChangeText={(cardName) => {this.setState({cardName: cardName}) ; console.log(this.state) ; this.validateCN(cardName) } }
+                                        error={ this.state.cardName && !this.state.validCN}
+                                        onSubmitEditing={() => this.cardNumberInput.focus()}
                                         value={this.state.cardName}/>
+                                    <HelperText
+                                        type="error"
+                                        visible={!this.state.validCN && this.state.cardName}
+                                        >
+                                            Cannot put an empty card establishment name
+                                        </HelperText>
                                 <TextInput 
                                         label = "Card Number"
                                         style={styles.input}
                                         keyboardType="decimal-pad"
                                         returnKeyType="done"
                                         theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
-                                        onChangeText={(cardNumber) => this.setState({cardNumber: cardNumber})}
+                                        onChangeText={(cardNumber) => { this.setState({cardNumber: cardNumber}) ; console.log(this.state) ; this.validateCA(cardNumber)} }
+                                        ref = {(input) => this.cardNumberInput = input}
+                                        onSubmitEditing={() => this.cardPointInput.focus()}
                                         value={this.state.cardNumber}/>
+                                        <HelperText
+                                        type="error"
+                                        visible={!this.state.validCa && this.state.cardNumber}
+                                        >
+                                            Cannot put an empty card number
+                                        </HelperText>
                                 <TextInput
                                     label = "Current points"
                                     style={styles.input}
@@ -276,6 +311,7 @@ export default class AddCard extends React.Component {
                                     returnKeyType="done"
                                     theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
                                     onChangeText={(currentPoints) => this.setState({currentPoints: currentPoints})}
+                                    ref = {(input) => this.cardPointInput = input}
                                     value={this.state.currentPoints}/>
                                 <Text style={styles.input}>Choose a card category</Text>
                                 <RadioForm
