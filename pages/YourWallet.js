@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
-import { Alert,AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity } from 'react-native';
+import { Alert,AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity,AsyncStorage } from 'react-native';
 import { Card, ListItem, Button, Icon, Image } from 'react-native-elements';
 import retailCard from '../retailCard';
 import {Actions} from 'react-native-router-flux';
@@ -62,13 +62,20 @@ export default class YourWallet extends Component{
                         break;
             }
         }
-        console.log(this.state.foodCards);
-        console.log(this.state.clothingCards);
-        console.log(this.state.gasCard);
     }
 
-    componentDidMount(){
+    async componentDidMount(){
         this.categorizeArr();
+        this.setTempCard();
+    }
+
+    async setTempCard(){
+      try{
+        await AsyncStorage.setItem('activeCard', this.state.myCards(0))
+      }catch(error){
+        console.log(error)
+        console.log("Error setting temporary card")
+      }
     }
 
     cardview(item){
@@ -86,10 +93,16 @@ export default class YourWallet extends Component{
             onPress: () => console.log('Scan card pressed'),
             style: 'cancel',
           },
-          {text: 'Enter Details', onPress: () => console.log('Enter details pressed')},
+          {text: 'Enter Details',
+           onPress: () =>this.addcard()},
         ],
         {cancelable: false},
       );
+    }
+
+    addcard(){
+      console.log("enter details pressed");
+      Actions.addcard();
     }
 
 
@@ -103,7 +116,6 @@ export default class YourWallet extends Component{
                 data = {this.state.foodCards}
                 extraData = {this.state}
                 style= {styles.FlatListStyle}
-                onPress={console.log("HI!")}
                 renderItem = {({item,index}) => {
                     return (
                         <View>
