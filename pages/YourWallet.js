@@ -71,7 +71,7 @@ export default class YourWallet extends Component{
 
     async setTempCard(){
       try{
-        await AsyncStorage.setItem('activeCard', this.state.secondCup)
+        await AsyncStorage.setItem('activeCard', this.state.myCards(0))
       }catch(error){
         console.log(error)
         console.log("Error setting temporary card")
@@ -90,7 +90,7 @@ export default class YourWallet extends Component{
           {text: 'Cancel', onPress: () => console.log('Cancel Press')},
           {
             text: 'Scan Card',
-            onPress: () => console.log('Scan card pressed'),
+            onPress: () => this.scancard(),
             style: 'cancel',
           },
           {text: 'Enter Details',
@@ -103,6 +103,11 @@ export default class YourWallet extends Component{
     addcard(){
       console.log("enter details pressed");
       Actions.addcard();
+    }
+
+    scancard(){
+      console.log("scan card pressed");
+      Actions.scancard();
     }
 
 
