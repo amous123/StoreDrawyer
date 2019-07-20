@@ -18,11 +18,11 @@ export default class Routes extends Component {
                 titleStyle={{color: 'black',}}
             >
                 <Stack key="root">
+                <Scene key="login" component={Login} title="Login"/>
+                <Scene key="signup" component={Signup} title="Sign up"/>
                 <Scene key="yourwallet" component={Yourwallet} title="Wallet"/>
                 <Scene key="transac" component={Transaction} title="New Transaction"/>
                 <Scene key="addcard" component={AddCard} title="New Loyalty Card"/>
-                <Scene key="login" component={Login} title="Login"/>
-                <Scene key="signup" component={Signup} title="Sign up"/>
                 <Scene key="cardview" component={Cardview} title="Cards"/>
                 <Scene key="scancard" component={ScanCard} title="Scan Barcode"/>
                 </Stack>

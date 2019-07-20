@@ -111,10 +111,12 @@ export default class AddCard extends React.Component {
     };
     constructor(props) { 
         super(props);
+        activecard = this.props.card;
+        points = activecard.points;
         this.state = { 
             cardNumber: '1234 5678 9876 5432',
             cardRate: 2.5,
-            currentPoints:3,
+            currentPoints:points,
             amountSpent: 0,
             newPoints: 0,
         }
@@ -203,7 +205,7 @@ export default class AddCard extends React.Component {
                         <Section>
                             <SectionItem>
                             <Text style={{padding: 10, fontSize: 22, color: '#9DA8BA' }}>
-                            Your current balance is : {  this.state.newPoints} points
+                            Your current balance is : {  this.state.newPoints + this.state.currentPoints} points
                             </Text>
                             </SectionItem>
                         </Section>

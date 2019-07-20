@@ -63,7 +63,8 @@ export default class CardView extends Component{
     }
 
     addTransaction(){
-        Actions.transac();
+        var card = this.state.card;
+        Actions.transac({card:card});
     }
 
     

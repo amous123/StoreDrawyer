@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
  
 import {Actions} from 'react-native-router-flux';
+//import console = require('console');
  
 export default class FormSignUp extends Component {
  
@@ -33,53 +34,31 @@ export default class FormSignUp extends Component {
         if(this.props.type !== 'Login')
         {
             try{
-                let loginDetails = await AsyncStorage.getItem('loginDetails');
-                let ld = JSON.parse(loginDetails);
-                console.log(this.ld);
-                if(ld.username !== username){
-                    AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
- 
-                    Keyboard.dismiss();
-                    alert("You successfully registered. Username: " + username + " Email: " + email + ' password: ' + password);
-                    console.log(this.state);
-                    this.login();
-                }else{
-                    alert('Username already taken!');
-                    console.log(this.state);
+                //let loginDetails = await AsyncStorage.getItem('loginDetails');
+                //let ld = JSON.parse(loginDetails);
+                //alert(loginDetails);
+                //alert(ld.username +":"+ username);
+                if ((!this.state.username == "") && (!this.state.password == "")){
+                    if(email.includes("@")){
+                        
+                        //AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
+    
+                        Keyboard.dismiss();
+                        alert("You successfully registered. Username: " + username + " Email: " + email + ' password: ' + password);
+                        console.log(this.state);
+                        this.login();
+                    }else{
+                        alert('Email has the wrong format!');
+                    }
+                }
+                else{
+                    alert("Username or Password empty");
                 }
 
             }catch(error){
-                alert('error');
-                console.log(this.state);
+                alert('error'+error);
             }
 
-        }
-        else if(this.props.type == 'Login')
-        {
-            try{
-                let loginDetails = await AsyncStorage.getItem('loginDetails');
-                let ld = JSON.parse(loginDetails);
- 
-                if (ld.username != null && ld.password != null)
-                {
-                    if (ld.username == username && ld.password == password)
-                    {
-                        alert('Log in successful!');
-                        console.log(this.state);
-                        this.login();
-                    }
-                    else
-                    {
-                        alert('Username or password is not valid!');
-                        console.log(this.state);
-                    }
-                }
- 
-            }catch(error)
-            {
-                alert('Could not login');
-                console.log(this.state);
-            }
         }
     }
  
@@ -142,8 +121,8 @@ export default class FormSignUp extends Component {
             ref={(input) => this.password = input}
           />
  
-                <TouchableOpacity style={styles.button}> 
-                    <Text style={styles.buttonText} onPress={this.saveData}>{this.props.type}</Text>
+                <TouchableOpacity style={styles.button} onPress={this.saveData}> 
+                    <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>
             </View>
             
