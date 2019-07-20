@@ -6,6 +6,8 @@ import retailCard from '../retailCard';
 import {Actions} from 'react-native-router-flux';
 
 
+
+//flat list item representing each card in the user's wallet
 class FlatListItem extends Component{
     render() {
       return (
@@ -26,17 +28,8 @@ export default class YourWallet extends Component{
 
     constructor(props){
         super(props)
-        // //initialize a default list for testing purposes
-        // var cards = [];
-        // var gap = new retailCard("Gap",0,2,0,1);
-        // var starbucks = new retailCard("Starbucks",0,3,"1234 5678 9876 5432",0);
-        // var secondCup = new retailCard("Second Cup",0,4,0,0);
-        // var shell = new retailCard("Shell",0,5,0,2);
-        // var esso = new retailCard("Esso",0,6,0,2);
-        // var tims = new retailCard("Tims",0,7,0,0);
-        // var mcdonalds = new retailCard("McDonald's",0,8,0,0);
-        // var newCard = new retailCard
-        // cards.push(ae,gap,starbucks,secondCup,shell,esso,tims,mcdonalds);
+        // State variables initialized to hold the users cards,
+        //food,clothing, and gas represent the different categories of cards the user has
         this.state = {
             myCards : [],
             foodCards:[],
@@ -45,13 +38,15 @@ export default class YourWallet extends Component{
         }
 
     }
-
+    //this method takes the initialize list of user cards and creates 3 new distinct arrays from them,
+    //each array is a category of cards
     categorizeArr(){
         var foodCardsArr =[];
         var clothingCardsArr =[];
         var gasCardArr =[];
         var items = this.state.myCards;
         for(var i = 0; i < items.length; i++){
+          //swtich case to push items to the appropriate arrays
             switch(items[i].category){
                 case 0:
                     foodCardsArr.push(items[i]);
@@ -79,6 +74,8 @@ export default class YourWallet extends Component{
       this.getUserCards();    
     }
 
+
+    //use async storage to get the user cards
     async getUserCards(){
       try{
         const cardsarr = await AsyncStorage.getItem('userCards')
@@ -91,7 +88,7 @@ export default class YourWallet extends Component{
           });
         }
         else{
-          //no usercards array exists
+          //no usercards array exists, typically this will only run once on the first run
           console.log("no userCards array exists, setting empty array")
           await AsyncStorage.setItem('userCards', JSON.stringify([]))
         }
@@ -99,18 +96,6 @@ export default class YourWallet extends Component{
         console.log(error);
         console.log("getUsercards threw an unexpected error")
       }
-      // var gap = new retailCard("Gap",0,2,0,1);
-      // var cards = [];
-      // cards.push(gap);
-      // this.setState({
-      //   myCards:cards,
-      // })
-      // var item = this.state.myCards;
-      // try{  
-      //   await AsyncStorage.setItem('userCards', JSON.stringify(item))
-      // }catch(error){
-      //   console.log("error caught")
-      // }
       this.categorizeArr();
     }
 
@@ -118,6 +103,7 @@ export default class YourWallet extends Component{
       Actions.cardview({card:item});
     }
 
+    //add new card button, displays an alert
     newCard(){
       Alert.alert(
         'Add a new card',
@@ -136,11 +122,13 @@ export default class YourWallet extends Component{
       );
     }
 
+    //go to add card page
     addcard(){
       console.log("enter details pressed");
       Actions.addcard();
     }
-
+    
+    //go to scancard
     scancard(){
       console.log("scan card pressed");
       Actions.scancard();
@@ -153,7 +141,10 @@ export default class YourWallet extends Component{
               <Image 
             style={styles.help}
             source = {require('../assets/help.png')}></Image>
+                {/* one of the headers used to seperate the different caetegories */}
                 <View style = {styles.headers}><Text style = {styles.titles}>Food</Text></View>
+                {/* A flat list is used to dynamically render the content of the categorized arrays
+                3 flatlist in total are present, one for each array */}
                 <FlatList 
                 contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
                 horizontal={true}
@@ -163,6 +154,8 @@ export default class YourWallet extends Component{
                 renderItem = {({item,index}) => {
                     return (
                         <View>
+                          {/* Each individual "card" gets surround by a touchable opacity, this is so that
+                        a user may click the card and be sent to the cardview screen, display details for the selected card */}
                           <TouchableOpacity onPress={() => this.cardview(item)}>
                             <FlatListItem
                              item = {item} index = {index}>
@@ -174,6 +167,7 @@ export default class YourWallet extends Component{
                 keyExtractor={(item, index) => index.toString()} 
                 
                 >
+                  {/* flatlist 2 */}
                 </FlatList>
                 <View style = {styles.headers}><Text style = {styles.titles}>Clothing</Text></View>
                 <FlatList 
@@ -195,7 +189,7 @@ export default class YourWallet extends Component{
                 keyExtractor={(item, index) => index.toString()} 
                 
                 >
-
+                  {/* flatlist 3 */}
                 </FlatList>
                 <View style = {styles.headers}><Text style = {styles.titles}>Gas</Text></View>
                 <FlatList 
@@ -219,6 +213,7 @@ export default class YourWallet extends Component{
                 >
 
                 </FlatList>
+                {/* add a new card button that is present on the bottom of the page */}
                   <View style = {styles.offerButton}>
                     <TouchableOpacity
                     style={styles.button}
