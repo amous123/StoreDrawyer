@@ -144,22 +144,34 @@ export default class AddCard extends React.Component {
     }
 
     async addCard(){
-        var cardToAdd  = new retailCard(
-            this.state.cardName,
-            this.state.currentPoints,
-            69,
-            this.state.cardNumber,
-            this.state.cardCategory,
-            );
-        var cards = this.state.userCards;
-        cards.push(cardToAdd);
-        const item = JSON.stringify(cards);
-        try{
-            await AsyncStorage.setItem('userCards',item);
-        }catch(error){
-            console.log("newCard thre an error!")
+        if (this.state.validCa && this.state.validFN && this.state.validLN && this.state.validCN){
+            var cardToAdd  = new retailCard(
+                this.state.cardName,
+                this.state.currentPoints,
+                69,
+                this.state.cardNumber,
+                this.state.cardCategory,
+                );
+            var cards = this.state.userCards;
+            cards.push(cardToAdd);
+            const item = JSON.stringify(cards);
+            try{
+                await AsyncStorage.setItem('userCards',item);
+            }catch(error){
+                console.log("newCard thre an error!")
+            }
+            this.newCard();
+        }else {
+            Alert.alert(
+                'Error',
+                'Missing requied information! Please fill up form ',
+                [
+                  {text: 'Cancel'}
+                   
+                ],
+                {cancelable: false},
+              );
         }
-        this.newCard();
     }
     newCard(){
         Alert.alert(
@@ -206,6 +218,10 @@ export default class AddCard extends React.Component {
 
     validateCN = (input) => {
         this.setState({validCa: input.length >= 8, cardNumber: input});
+    }
+
+    validateCN = (input) => {
+        this.setState({validCN: input.length >= 2, cardName: input});
     }
 
     async getUserCards(){
@@ -285,9 +301,7 @@ export default class AddCard extends React.Component {
                                         label = "Card Name"
                                         style={styles.input}
                                         theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
-                                        onChangeText={(cardName) => {this.setState({cardName: cardName}) ; console.log(this.state) ; this.validateCN(cardName) } }
-                                        error={ this.state.cardName && !this.state.validCN}
-                                        onSubmitEditing={() => this.cardNumberInput.focus()}
+                                        onChangeText={(cardName) => {this.setState({cardName: cardName}) ; this.validateCN(cardName)} }
                                         value={this.state.cardName}/>
                                     <HelperText
                                         type="error"
@@ -301,9 +315,7 @@ export default class AddCard extends React.Component {
                                         keyboardType="decimal-pad"
                                         returnKeyType="done"
                                         theme={{ colors: { primary: "#1C88E5", background:"#ffffff", underlineColor:'#1C88E5'}}}
-                                        onChangeText={(cardNumber) => { this.setState({cardNumber: cardNumber}) ; console.log(this.state) ; this.validateCA(cardNumber)} }
-                                        ref = {(input) => this.cardNumberInput = input}
-                                        onSubmitEditing={() => this.cardPointInput.focus()}
+                                        onChangeText={(cardNumber) => {this.setState({cardNumber: cardNumber}) ; this.validateCA(cardNumber) } }
                                         value={this.state.cardNumber}/>
                                         <HelperText
                                         type="error"

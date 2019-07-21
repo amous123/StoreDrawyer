@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage, Keyb
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
 import {Actions} from 'react-native-router-flux';
+//import console = require('console');
  
 export default class FormSignUp extends Component {
  

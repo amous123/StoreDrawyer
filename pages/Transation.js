@@ -111,10 +111,12 @@ export default class AddCard extends React.Component {
     };
     constructor(props) { 
         super(props);
+        activecard = this.props.card;
+        points = activecard.points;
         this.state = { 
             cardNumber: '1234 5678 9876 5432',
             cardRate: 2.5,
-            currentPoints:3,
+            currentPoints:points,
             amountSpent: 0,
             newPoints: 0,
         }

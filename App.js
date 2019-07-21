@@ -21,6 +21,7 @@ export default class App extends Component   {
   }
 }
  
+// Styles for App initialisation
 const styles = StyleSheet.create({
   container: {
     flex: 1,

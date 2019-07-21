@@ -26,6 +26,10 @@ export default class CardView extends Component{
         this.getUserCards();
       }
 
+        // async method to get the user cards array from storage
+        //getting the entire array is necessary as if a user chooses to delete a card then we must remove it from the cards
+        //it might be possible to lazy load this array only if the user wants to delete a card or add a transaction
+        //however, that might cause a delayed response time  
       async getUserCards(){
         try{
           const cardsarr = await AsyncStorage.getItem('userCards')
@@ -45,6 +49,11 @@ export default class CardView extends Component{
         }
       }
 
+
+    // method to delete the card if the user selectes that option
+    // the card is found in the array by its name, if there is more than one with same name the first gets deleted
+    //find the card and splice the array at its index
+    //a way to improve this would be using a unique key for each card, eliminating the problem with duplicates
     async deleteCard(){
         var cardArr = this.state.userCards;
         var active = this.state.card;
@@ -62,11 +71,13 @@ export default class CardView extends Component{
         }
     }
 
+    //go to add transaction page
     addTransaction(){
-        Actions.transac();
+        var card = this.state.card;
+        Actions.transac({card:card});
     }
 
-    
+    //confirm the user wants to delete the card
     confirmDelete(){
         Alert.alert(
           'Delete Card',
@@ -82,34 +93,7 @@ export default class CardView extends Component{
           {cancelable: false},
         );
       }
-
-    async deleteCard(){
-        try{
-            await AsyncStorage.removeItem('activeCard');
-            console.log("removed card successfully")
-            Actions.yourwallet();
-        }catch(error){
-            console.log("Error deleting Card")
-        }
-    }
-
-    
-    confirmDelete(){
-        Alert.alert(
-          'Delete Card',
-          'Are you sure you want to delete this card?',
-          [
-            {text: 'Cancel', onPress: () => console.log('Cancel Press')},
-            {
-              text: 'Yes, delete this card',
-              onPress: () => this.deleteCard(),
-              style: 'cancel',
-            },
-          ],
-          {cancelable: false},
-        );
-      }
-
+    //   main user view
     render(){
         return(
             <View style = {styles.cont}>
@@ -126,7 +110,7 @@ export default class CardView extends Component{
             </View>
                 <View style = {styles.cardStyle}>
                     <View style = {styles.TextViewStyle}>
-                    <Text style = {styles.TextStyle}>Adam Lawson</Text>
+                    <Text style = {styles.TextStyle}> {this.state.card.name}</Text>
                     <Text style = {styles.TextStyle}>{this.state.card.cardNumber}</Text>
                     </View>
                 </View>
