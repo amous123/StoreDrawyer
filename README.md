@@ -9,7 +9,8 @@ Installations to begin project:
 3. sudo npm i react-navigation
 4. sudo npm i react-native-elements
 5. sudo npm install --save react-native-router-flux
-6. 
+6. sudo npm i --save AsyncStorage
+7. 
 
 Command to begin project: expo start
 Run emulator of your choice.

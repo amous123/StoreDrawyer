@@ -203,11 +203,7 @@ export default class AddCard extends React.Component {
                         <Section>
                             <SectionItem>
                             <Text style={{padding: 10, fontSize: 22, color: '#9DA8BA' }}>
-<<<<<<< HEAD
-                            Your current balance is : {  this.state.newPoints} points
-=======
                             Your current balance is : {  this.state.newPoints + this.state.currentPoints} points
->>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
                             </Text>
                             </SectionItem>
                         </Section>

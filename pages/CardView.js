@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
-<<<<<<< HEAD
-import { Alert,AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity,AsyncStorage } from 'react-native';
-=======
 import {Alert,AppRegistry, FlatList, StyleSheet, Text, View, ScrollView,TouchableOpacity,AsyncStorage } from 'react-native';
->>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
 import { Card, ListItem, Button, Icon, Image } from 'react-native-elements';
 import retailCard from '../retailCard';
 import {Actions} from 'react-native-router-flux';

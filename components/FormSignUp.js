@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
- 
 import {Actions} from 'react-native-router-flux';
-//import console = require('console');
  
 export default class FormSignUp extends Component {
  
+    // Constructor for user data
     constructor(props){
         super(props);
         this.state={
@@ -17,10 +16,12 @@ export default class FormSignUp extends Component {
         }
     }
 
+    // Function to go to wallet page(home)
     login(){
         Actions.yourwallet();
     }
  
+    // Function to save input data
     saveData =async()=>{
         const {username,email,password} = this.state;
  
@@ -31,32 +32,25 @@ export default class FormSignUp extends Component {
             password: password
         }
  
+        // If statement to make sure this is signup page
         if(this.props.type !== 'Login')
         {
+            // Storing user information will be performed by back-end
+            // in the future iteration of application
             try{
-<<<<<<< HEAD
-                //let loginDetails = await AsyncStorage.getItem('loginDetails');
-                //let ld = JSON.parse(loginDetails);
-                //alert(loginDetails);
-                //alert(ld.username +":"+ username);
-                if(email.includes("@")){
-                    
-                    //AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
-=======
-                let loginDetails = await AsyncStorage.getItem('loginDetails');
-                let ld = JSON.parse(loginDetails);
-                console.log(this.ld);
-                if(ld.username !== username){
-                    AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
->>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
- 
-                    Keyboard.dismiss();
-                    alert("You successfully registered. Username: " + username + " Email: " + email + ' password: ' + password);
-                    console.log(this.state);
-                    this.login();
-                }else{
-<<<<<<< HEAD
-                    alert('Email has the wrong format!');
+                // If statements to make sure inputs are not empty and email is in the correct format (contains '@')
+                if ((!this.state.username == "") && (!this.state.password == "")){
+                    if(email.includes("@")){
+                        Keyboard.dismiss();
+                        alert("You successfully registered. Username: " + username + " Email: " + email + ' password: ' + password);
+                        console.log(this.state);
+                        this.login();
+                    }else{
+                        alert('Email has the wrong format!');
+                    }
+                }
+                else{
+                    alert("Username or Password empty");
                 }
 
             }catch(error){
@@ -64,47 +58,9 @@ export default class FormSignUp extends Component {
             }
 
         }
-=======
-                    alert('Username already taken!');
-                    console.log(this.state);
-                }
-
-            }catch(error){
-                alert('error');
-                console.log(this.state);
-            }
-
-        }
-        else if(this.props.type == 'Login')
-        {
-            try{
-                let loginDetails = await AsyncStorage.getItem('loginDetails');
-                let ld = JSON.parse(loginDetails);
- 
-                if (ld.username != null && ld.password != null)
-                {
-                    if (ld.username == username && ld.password == password)
-                    {
-                        alert('Log in successful!');
-                        console.log(this.state);
-                        this.login();
-                    }
-                    else
-                    {
-                        alert('Username or password is not valid!');
-                        console.log(this.state);
-                    }
-                }
- 
-            }catch(error)
-            {
-                alert('Could not login');
-                console.log(this.state);
-            }
-        }
->>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
     }
  
+    // Function to show user data
     showData = async()=>{
         let loginDetails = await AsyncStorage.getItem('loginDetails');
         let ld = JSON.parse(loginDetails);
@@ -115,6 +71,7 @@ export default class FormSignUp extends Component {
         return(
             <View style={styles.container}>
 
+            {/* Username input */}
             <Input
           leftIcon={
             <Icon
@@ -131,7 +88,8 @@ export default class FormSignUp extends Component {
             onSubmitEditing={()=> this.email.focus()}
           />
 
-<Input
+            {/* Email input */}
+            <Input
           leftIcon={
             <Icon
               name='envelope'
@@ -148,6 +106,7 @@ export default class FormSignUp extends Component {
             ref={(input) => this.email = input}
           />
 
+          {/* Password input */}
           <Input
           leftIcon={
             <Icon
@@ -164,6 +123,7 @@ export default class FormSignUp extends Component {
             ref={(input) => this.password = input}
           />
  
+                {/* Sign up button */}
                 <TouchableOpacity style={styles.button} onPress={this.saveData}> 
                     <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>
@@ -173,6 +133,7 @@ export default class FormSignUp extends Component {
     }
 }
  
+// Styles for FormSignUp component
 const styles = StyleSheet.create({
     container: {
         flex: 1,

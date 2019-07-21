@@ -75,20 +75,6 @@ export default class YourWallet extends Component{
         }
     }
 
-<<<<<<< HEAD
-    async componentDidMount(){
-        this.categorizeArr();
-        this.setTempCard();
-    }
-
-    async setTempCard(){
-      try{
-        await AsyncStorage.setItem('activeCard', this.state.myCards(0))
-      }catch(error){
-        console.log(error)
-        console.log("Error setting temporary card")
-      }
-=======
     componentDidMount(){
       this.getUserCards();    
     }
@@ -126,7 +112,6 @@ export default class YourWallet extends Component{
       //   console.log("error caught")
       // }
       this.categorizeArr();
->>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
     }
 
     cardview(item){
@@ -156,14 +141,11 @@ export default class YourWallet extends Component{
       Actions.addcard();
     }
 
-<<<<<<< HEAD
-=======
     scancard(){
       console.log("scan card pressed");
       Actions.scancard();
     }
 
->>>>>>> dd0119b41b03f7f798e5349e821308451d4221e1
 
     render(){
         return(
